@@ -1,0 +1,64 @@
+// Monty Hall explizit aufgeschrieben
+
+pomdp
+
+// Wichtiger Hinweis: Stormvogel macht den observation-index ggf. anders, so dass dann z. B. observation 0 den Index 3 hat
+observables
+	o
+endobservables
+
+module montyHall
+  n : [0..3] init 0; // richtige Tuer (0 ist Startzustand)
+  g : [0..3] init 0; // zuerst gewaehlte Tuer
+  o : [-1..4] init -1; // observation
+  t : [0..3] init 0; // letztlich gewaehlte Tuer
+  
+  [] n=0 & g=0 & o=-1 & t=0 -> 1/3:(o'=0)&(n'=1) + 1/3:(o'=0)&(n'=2) + 1/3:(o'=0)&(n'=3); // richtige Tuer
+
+  [choose1] n=1 & g=0 & o=0 & t=0 -> 0.5:(o'=2)&(g'=1) + 0.5:(o'=3)&(g'=1); // entweder observation 2 oder 3
+  [choose2] n=1 & g=0 & o=0 & t=0 -> (o'=3)&(g'=2); // observation 3
+  [choose3] n=1 & g=0 & o=0 & t=0 -> (o'=2)&(g'=3); // observation 2
+  [choose1] n=2 & g=0 & o=0 & t=0 -> (o'=3)&(g'=1); // observation 3
+  [choose2] n=2 & g=0 & o=0 & t=0 -> 0.5:(o'=1)&(g'=2) + 0.5:(o'=3)&(g'=2); // entweder observation 1 oder 3
+  [choose3] n=2 & g=0 & o=0 & t=0 -> (o'=1)&(g'=3); // observation 1
+  [choose1] n=3 & g=0 & o=0 & t=0 -> (o'=2)&(g'=1); // observation 2
+  [choose2] n=3 & g=0 & o=0 & t=0 -> (o'=1)&(g'=2); // observation 1
+  [choose3] n=3 & g=0 & o=0 & t=0 -> 0.5:(o'=1)&(g'=3) + 0.5:(o'=2)&(g'=3); // entweder observation 1 oder 2
+  [stay] n!=0 & g=1 & o!=0 & t=0 -> (t'=1)&(o'=4); // Tuer 1 gewaehlt
+  [stay] n!=0 & g=2 & o!=0 & t=0 -> (t'=2)&(o'=4); //  Tuer 2 gewaehlt
+  [stay] n!=0 & g=3 & o!=0 & t=0 -> (t'=3)&(o'=4); // Tuer 3 gewaehlt
+  [swap] n=1 & g=1 & o=2 & t=0 -> (t'=3)&(o'=4); // Tuer 3 gewaehlt
+  [swap] n=1 & g=1 & o=3 & t=0 -> (t'=2)&(o'=4); // Tuer 2 gewaehlt
+  [swap] n=1 & (g=2 | g=3) & o!=0 & t=0 -> (t'=1)&(o'=4); // Tuer 1 gewaehlt
+  [swap] n=2 & g=2 & o=1 & t=0 -> (t'=3)&(o'=4); // Tuer 3 gewaehlt
+  [swap] n=2 & g=2 & o=3 & t=0 -> (t'=1)&(o'=4); // Tuer 1 gewaehlt
+  [swap] n=2 & (g=1 | g=3) & o!=0 & t=0 -> (t'=2)&(o'=4); // Tuer 2 gewaehlt
+  [swap] n=3 & g=3 & o=1 & t=0 -> (t'=2)&(o'=4); // Tuer 2 gewaehlt
+  [swap] n=3 & g=3 & o=2 & t=0 -> (t'=1)&(o'=4); // Tuer 1 gewaehlt
+  [swap] n=3 & (g=1 | g=2) & o!=0 & t=0 -> (t'=3)&(o'=4); // Tuer 3 gewaehlt
+
+  // Endzustand (keine Aktionen mehr moeglich)
+  [] o=4 -> (o'=4);
+endmodule
+
+// aktuell nicht mit rewards, sondern mit labels
+// in Storm aktuell nur state rewards moeglich
+//rewards "car"
+//  n=1 & t=1 : 1;
+//  n=1 & t=2 : 0;
+//  n=1 & t=3 : 0;
+//  n=2 & t=1 : 0;
+//  n=2 & t=2 : 1;
+//  n=2 & t=3 : 0;
+//  n=3 & t=1 : 0;
+//  n=3 & t=2 : 0;
+//  n=3 & t=3 : 1;
+//endrewards
+
+// labels fuer verschiedene properties
+label "car" = n=t & n!=0;
+//label "goat" = n!=t & n!=0;
+//label "d1" = n=1;
+//label "d2" = n=2;
+//label "d3" = n=3;
+//label u = n=3;

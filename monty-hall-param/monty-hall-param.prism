@@ -1,0 +1,31 @@
+pomdp
+
+// Anzahl Tueren
+const int N=8;
+//const double d = log(20,2);
+//const double e = func(floor, d);
+// log auch manuell eingeben?
+
+//obvervables
+//  o
+//endobservables
+
+// die richtige Tuer wird "gewuerfelt"
+module dice
+  c: [0..N] init 0; // gewurfelter Wert
+  n: [0..floor(log(N,2))] init 0; // bit-Stelle
+
+  [roll] n=0 -> 1/2:(c'=N)&(n'=1) + 1/2:(c'=1)&(n'=1);
+  //[roll] n<ceil(log(N,2)) -> (n'=ceil(log(N,2)));
+  //[roll] n<N-1 -> 1/2:(c'=c)&(n'=n+1) + 1/2:(c'=c+2^n)&(n'=n+1); // bits zufaellig setzen
+  //[toolarge] n=N & c>=N -> (n'=0)&(c'=0) ; // zu grosse Zahl (es soll maximal N-1 gewuerfelt werden)
+endmodule
+
+//module montyHall
+//  n : [0..N] init 0; // richtige Tuer (0 ist Startzustand)
+//  o : [0..N] init 0; // observation
+//
+//endmodule
+
+
+// storm-pomdp --prism monty-hall-param.prism --prop "Pmin=? [F c=N]" --belief-exploration both

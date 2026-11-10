@@ -1,0 +1,10 @@
+// storm-pomdp --prism monty-hall-explicit.prism --prop "Pmin=? [F \"car\"]" --belief-exploration both
+// storm-pomdp --prism monty-hall-explicit.prism --prop monty-hall-explicit.props --belief-exploration both
+
+// Wichtig: Es wird immer nur eine property genommen, die andere auskommentieren
+
+// minimum probability of winning the car
+"minimum": Pmin=? [F "car"];
+
+// maximum probability of winning the car
+"maximum": Pmax=? [F "car"]
